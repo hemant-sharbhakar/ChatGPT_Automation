@@ -66,7 +66,7 @@ class ChatGPT_Client:
         self.browser.set_page_load_timeout(15)
         logging.info('Loaded Undetected chrome')
         logging.info('Opening chatgpt')
-        self.browser.get('https://chat.openai.com/auth/login?next=/chat')
+        self.browser.get('https://chat.openai.com/?model=gpt-4')
         if not cold_start:
             self.pass_verification()
             self.login(username, password)
@@ -239,12 +239,17 @@ class ChatGPT_Client:
             str: The generated answer.
         '''
         text_area = self.browser.find_element(By.TAG_NAME, 'textarea')
+        
         for each_line in question.split('\n'):
             text_area.send_keys(each_line)
             text_area.send_keys(Keys.SHIFT + Keys.ENTER)
         text_area.send_keys(Keys.RETURN)
-        logging.info('Message sent, waiting for response')
-        self.wait_to_disappear(By.CLASS_NAME, self.wait_cq)
+        
+        
+        time.sleep(10)
+        print('Message sent, waiting for response')
+        # self.wait_to_disappear(By.CLASS_NAME, self.wait_cq)
+        print(self.browser.get_screenshot_as_file("test.png"))
         answer = self.browser.find_elements(By.CLASS_NAME, self.chatbox_cq)[-1]
         logging.info('Answer is ready')
         return answer.text
